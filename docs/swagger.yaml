@@ -1,0 +1,171 @@
+basePath: /
+definitions:
+  response.Response-string:
+    properties:
+      data:
+        type: string
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: API for Pharmacy Management System
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Pharmacy API
+  version: "1.0"
+paths:
+  /api/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Đăng nhập với email và mật khẩu
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Đăng nhập
+      tags:
+      - Auth
+  /api/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Đăng ký người dùng mới với thông tin được cung cấp
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Đăng ký người dùng mới
+      tags:
+      - Auth
+  /api/user-dto:
+    get:
+      consumes:
+      - application/json
+      description: Đăng ký người dùng mới với thông tin được cung cấp
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Đăng ký người dùng mới
+      tags:
+      - Users
+  /api/users:
+    get:
+      consumes:
+      - application/json
+      description: Đăng ký người dùng mới với thông tin được cung cấp
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Đăng ký người dùng mới
+      tags:
+      - Users
+  /api/users/export:
+    post:
+      description: API cho phép tải danh sách người dùng dạng Excel. Yêu cầu đăng
+        nhập (JWT Token).
+      produces:
+      - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+      responses:
+        "200":
+          description: File Excel chứa danh sách người dùng
+          schema:
+            type: file
+        "401":
+          description: Không có hoặc token không hợp lệ
+          schema:
+            $ref: '#/definitions/response.Response-string'
+        "500":
+          description: Lỗi hệ thống khi export dữ liệu
+          schema:
+            $ref: '#/definitions/response.Response-string'
+      security:
+      - BearerAuth: []
+      summary: Xuất danh sách người dùng ra file Excel
+      tags:
+      - Users
+  /api/users/import:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Cho phép upload file Excel (.xlsx hoặc .xls) để import người dùng
+        hàng loạt
+      parameters:
+      - description: File Excel (.xlsx hoặc .xls)
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Import thành công
+          schema:
+            $ref: '#/definitions/response.Response-string'
+        "400":
+          description: File không hợp lệ hoặc lỗi đọc dữ liệu
+          schema:
+            $ref: '#/definitions/response.Response-string'
+        "500":
+          description: Lỗi hệ thống
+          schema:
+            $ref: '#/definitions/response.Response-string'
+      security:
+      - BearerAuth: []
+      summary: Import danh sách người dùng từ file Excel
+      tags:
+      - Users
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
