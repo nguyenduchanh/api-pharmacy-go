@@ -5,8 +5,6 @@ import (
 	_ "api-pharmacy-go/docs"
 	"api-pharmacy-go/middleware"
 	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	"log"
 	"net/http"
 	"time"
@@ -54,10 +52,18 @@ func SetupRouter() {
 		emp.PUT("/:id", controllers.UpdateEmp)
 		emp.DELETE("/:id", controllers.DeleteEmp)
 	}
+	per := router.Group("/api/permissions")
+	per.Use(middleware.AuthMiddleware())
+	{
+		per.GET("/", controllers.GetPermissions)
+		per.GET("/:id", controllers.GetPermission)
+		per.POST("/", controllers.CreatePermission)
+		per.PUT("/:id", controllers.UpdatePermission)
+		per.DELETE("/:id", controllers.DeletePermission)
+	}
 	router.NoRoute(func(c *gin.Context) {
 		c.String(http.StatusNotFound, "Not Found")
 	})
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	er := router.Run(":8888")
 	if er != nil {
 		log.Fatal("Lỗi khởi động server:", er)

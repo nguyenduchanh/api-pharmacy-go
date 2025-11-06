@@ -11,80 +11,75 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetEmps(c *gin.Context) {
-	emps, err := services.GetAllEmp()
+func GetPermissions(c *gin.Context) {
+	permissions, err := services.GetAllPermission()
 	if err != nil {
 		response.InternalServerError(c, "Lỗi truy vấn dữ liệu: "+err.Error())
 		return
 	}
-	response.OK(c, "Lấy dữ liệu nhân viên thành công", emps)
+	response.OK(c, "Lấy dữ liệu quyền thành công", permissions)
 }
-func GetEmp(c *gin.Context) {
+func GetPermission(c *gin.Context) {
 	id, ok := common.ParseUintParam(c, "id")
 	if !ok {
 		return
 	}
-	emp, err := services.GetEmpById(id)
+	per, err := services.GetPermissionById(id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			response.NotFound(c, "Không tìm thấy nhân viên")
+			response.NotFound(c, "Không tìm thấy quyền")
 		} else {
 			response.InternalServerError(c, "Lỗi khi truy vấn cơ sở dữ liệu: "+err.Error())
 		}
 	}
-	response.OK(c, "Lấy thông tin nhân viên thành công", emp)
+	response.OK(c, "Lấy thông tin quyền thành công", per)
 }
-func CreateEmp(c *gin.Context) {
+func CreatePermission(c *gin.Context) {
 	userInfo, _ := middleware.DecodeTokenFromHeader(c)
-	var input dto.EmpDto
+	var input dto.PermissionDto
 	if err := c.ShouldBindJSON(&input); err != nil {
 		response.BadRequest(c, "Dữ liệu không hợp lệ: "+err.Error())
 		return
 	}
-
-	_, err := services.GetEmpByPhone(*input.EmpPhone)
-	if err != nil {
-		response.Conflict(c, "Đã tồn tại nhân viên với số điện thoại trên")
-	}
-	newEmp, er := services.CreateEmp(input, userInfo)
+	newPer, er := services.CreatePermission(input, userInfo)
 	if er != nil {
-		response.BadRequest(c, "Không thể tạo mới nhân viên: "+er.Error())
+		response.BadRequest(c, "Không thể tạo mới quyền: "+er.Error())
 		return
 	}
-	response.Created(c, "Tạo nhân viên thành công", newEmp)
+	response.Created(c, "Tạo quyền thành công", newPer)
 }
 
-func UpdateEmp(c *gin.Context) {
+func UpdatePermission(c *gin.Context) {
 	userInfo, _ := middleware.DecodeTokenFromHeader(c)
-	var input dto.UpdateEmpDto
+	var input dto.UpdatePermissionDto
 	id, ok := common.ParseUintParam(c, "id")
 	if !ok {
 		return
 	}
-	emp, err := services.GetRoleById(id)
+	per, err := services.GetPermissionById(id)
 	if err != nil {
-		response.NotFound(c, "Không tìm thấy nhân viên")
+		response.NotFound(c, "Không tìm thấy quyền")
 		return
 	}
-	input.CreateBy = emp.CreateBy
-	input.CreateDate = emp.CreateDate
+	input.CreateBy = per.CreateBy
+	input.CreateDate = per.CreateDate
 	if err := c.ShouldBindJSON(&input); err != nil {
 		response.BadRequest(c, "Dữ liệu không hợp lệ: "+err.Error())
 		return
 	}
-	newEmp, er := services.UpdateEmp(emp.ID, input, userInfo)
+	perRes, er := services.UpdatePermission(per.ID, input, userInfo)
 	if er != nil {
 		response.BadRequest(c, "Không thể cập nhật nhân viên: "+er.Error())
 		return
 	}
-	response.OK(c, "Cập nhật nhân viên thành công", newEmp)
+	response.OK(c, "Cập nhật nhân viên thành công", perRes)
 }
-func DeleteEmp(c *gin.Context) {
+func DeletePermission(c *gin.Context) {
 	id, ok := common.ParseUintParam(c, "id")
 	if !ok {
 		return
 	}
-	_, er := services.GetEmpById(id)
+	_, er := services.GetPermissionById(id)
 	if er != nil {
 		response.NotFound(c, "Không tìm thấy nhân viên")
 		return

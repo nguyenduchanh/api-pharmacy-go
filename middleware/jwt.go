@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"api-pharmacy-go/dto/common"
 	"api-pharmacy-go/response"
 	"errors"
 	"fmt"
@@ -36,7 +37,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
-func DecodeTokenFromHeader(c *gin.Context) (*TokenClaims, error) {
+func DecodeTokenFromHeader(c *gin.Context) (*common.TokenClaims, error) {
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
 		return nil, errors.New("thiếu token trong header Authorization")
@@ -79,19 +80,11 @@ func DecodeTokenFromHeader(c *gin.Context) (*TokenClaims, error) {
 		}
 	}
 
-	return &TokenClaims{
+	return &common.TokenClaims{
 		UserID:   int(userID),
 		Username: username,
-		OrgId:    int(orgId),
+		OrgId:    uint64(orgId),
 		Roles:    roles,
 		Exp:      time.Unix(int64(expUnix), 0),
 	}, nil
-}
-
-type TokenClaims struct {
-	UserID   int
-	Username string
-	OrgId    int
-	Roles    []string
-	Exp      time.Time
 }

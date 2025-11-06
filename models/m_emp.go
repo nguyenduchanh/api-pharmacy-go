@@ -4,7 +4,7 @@ import "time"
 
 type MEmp struct {
 	ID          uint64     `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	Department  string     `gorm:"column:email;type:varchar(100)" json:"department"`
+	Department  string     `gorm:"column:department;type:varchar(100)" json:"department"`
 	EmpAddress  *string    `gorm:"column:emp_address;type:varchar(100)" json:"emp_address"`
 	EmpEmail    *string    `gorm:"column:emp_email;type:varchar(100)" json:"emp_email"`
 	EmpName     *string    `gorm:"column:emp_name;type:varchar(100)" json:"emp_name"`

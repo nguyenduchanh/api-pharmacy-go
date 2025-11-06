@@ -32,7 +32,9 @@ func main() {
 			&models.MUser{},
 			models.MRole{},
 			&models.UserRole{},
-			&models.MEmp{})
+			&models.MEmp{},
+			&models.MPermission{},
+		)
 	if err != nil {
 		fmt.Println("Lỗi migrate:", err)
 		return

@@ -1,11 +1,14 @@
 package dto
 
+import "time"
+
 type RoleDto struct {
 	Name        string  `json:"name"`
 	Description *string `json:"description"`
 }
 type UpdateRoleDto struct {
-	Id          uint64  `json:"id"`
-	Name        string  `json:"name"`
-	Description *string `json:"description"`
+	Name        string     `json:"name"`
+	Description *string    `json:"description"`
+	CreateDate  *time.Time `json:"create_at"`
+	CreateBy    *string    `json:"create_by"`
 }
